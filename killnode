@@ -22,6 +22,14 @@ sub runCommand($) {
     return @output;
 }
 
+# give user a chance to back out before an operation
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    print "\npress any key to continue... (ctrl-c to cancel)\n";
+    my $ok=<>;
+}
+
 MAIN: {
     my $firstArg=shift @ARGV;
     if ($firstArg) {
@@ -30,9 +38,11 @@ MAIN: {
         }
     }
 
-    # my $pidToKill = join('', runCommand("ps aux | grep 'node ' | grep -v 'grep' | awk '{ print \$2 }'"));
     my @pidLineToKill = runCommand("ps aux | grep 'node ' | grep -v 'grep'");
     foreach (@pidLineToKill) {
-        print "$_";
+        chomp;
+
+        print "kill?\n-> ";
+        confirm "$_\n";
     }
 }
