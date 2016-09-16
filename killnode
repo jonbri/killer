@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+sub help() {
+    print STDERR <<'HELP';
+killnode - Quickly kill node processes
+
+Args:
+  help - see this message
+
+https://github.com/jonbri/killnode
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    my $firstArg=shift @ARGV;
+    if ($firstArg) {
+        if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
+            help();
+        }
+    }
+
+    print join('', runCommand('ls'));
+    print "hello killnode\n";
+}
