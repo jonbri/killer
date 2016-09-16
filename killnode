@@ -44,5 +44,8 @@ MAIN: {
 
         print "kill?\n-> ";
         confirm "$_\n";
+
+        print "ok, invoke kill...\n";
+        runCommand("sudo ls");
     }
 }
