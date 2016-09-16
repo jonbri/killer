@@ -30,6 +30,9 @@ MAIN: {
         }
     }
 
-    print join('', runCommand('ls'));
-    print "hello killnode\n";
+    # my $pidToKill = join('', runCommand("ps aux | grep 'node ' | grep -v 'grep' | awk '{ print \$2 }'"));
+    my @pidLineToKill = runCommand("ps aux | grep 'node ' | grep -v 'grep'");
+    foreach (@pidLineToKill) {
+        print "$_";
+    }
 }
