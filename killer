@@ -47,14 +47,31 @@ MAIN: {
         }
     }
 
+    my $i_kills = 0;
+    my $i_skips = 0;
+
     my @pidLineToKill = runCommand("ps aux | grep '$firstArg ' | grep -v 'grep'");
     foreach (@pidLineToKill) {
         chomp;
 
         print "kill?\n-> ";
-        confirm "$_\n";
+        if (confirm "$_\n" eq "y") {
+            print "ok, invoke kill...\n";
+            runCommand("sudo ls");
+            $i_kills++;
+        } else {
+            print "skipped\n";
+            $i_skips++;
+        }
+    }
 
-        print "ok, invoke kill...\n";
-        runCommand("sudo ls");
+    if ($i_kills > 0) {
+        print "$i_kills processes killed\n";
+    }
+    if ($i_skips > 0) {
+        print "$i_skips processes skipped\n";
+    }
+    if ($i_kills == 0 && $i_skips == 0) {
+        print "no processes found that match the given pattern\n";
     }
 }
