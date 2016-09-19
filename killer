@@ -26,8 +26,11 @@ sub runCommand($) {
 sub confirm($) {
     my ($message)=@_;
     print $message;
-    print "\npress any key to continue... (ctrl-c to cancel)\n";
+    print "\npress any key to continue... (y/n/ctrl-c to cancel)\n";
+    print ">> ";
     my $ok=<>;
+    chomp $ok;
+    return $ok;
 }
 
 MAIN: {
