@@ -14,7 +14,7 @@ The checked-in version already has the executable bit set.
 
 ## Run
 ```
-killer help
-killer
+killer help           # see help
+killer node           # kill all node instances
+killer "jonbri.*node" # (regex) kill all node instances by user
 ```
-

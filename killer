@@ -8,6 +8,12 @@ killer - Quickly kill node processes
 
 Args:
   help - see this message
+  /pattern/ - see this message
+
+USAGE:
+  >> killer help           # see help
+  >> killer node           # kill all node instances
+  >> killer "jonbri.*node" # kill all node instances by user
 
 https://github.com/jonbri/killer
 
