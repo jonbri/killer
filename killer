@@ -72,7 +72,7 @@ MAIN: {
         if (confirm "$_" eq "y") {
             my @pidParts = split(/\s+/, $_);
             my $pidToKill = $pidParts[1];
-            runCommand("sudo ls");
+            runCommand("sudo kill -9 $pidToKill");
             print "killed pid $pidToKill\n";
             $i_kills++;
         } else {
