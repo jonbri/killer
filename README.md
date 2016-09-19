@@ -1,7 +1,7 @@
-# killnode
-While developing NodeJS applications I often create stray processes by accident.
+# killer
+While developing I often create stray processes by accident.
 
-To fix this situation I usually use a combination of `px aux | grep node` and `kill -9 123`.
+To fix this situation I usually use something like: `px aux | grep node` and `kill -9 123`.
 
 This script makes that action a little easier.
 
@@ -14,6 +14,7 @@ The checked-in version already has the executable bit set.
 
 ## Run
 ```
-killnode
+killer help
+killer
 ```
 

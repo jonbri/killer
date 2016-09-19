@@ -4,12 +4,12 @@ use strict;
 
 sub help() {
     print STDERR <<'HELP';
-killnode - Quickly kill node processes
+killer - Quickly kill node processes
 
 Args:
   help - see this message
 
-https://github.com/jonbri/killnode
+https://github.com/jonbri/killer
 
 HELP
 }
@@ -32,13 +32,19 @@ sub confirm($) {
 
 MAIN: {
     my $firstArg=shift @ARGV;
+
+    if (!$firstArg) {
+        help();
+        exit 1;
+    }
+
     if ($firstArg) {
         if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
             help();
         }
     }
 
-    my @pidLineToKill = runCommand("ps aux | grep 'node ' | grep -v 'grep'");
+    my @pidLineToKill = runCommand("ps aux | grep '$firstArg ' | grep -v 'grep'");
     foreach (@pidLineToKill) {
         chomp;
 
