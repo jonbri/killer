@@ -32,8 +32,7 @@ sub runCommand($) {
 sub confirm($) {
     my ($message)=@_;
     print $message;
-    print "\nkill? (y/n/ctrl-c to cancel) ";
-    print ">> ";
+    print "\nkill? (y/n) ";
     my $ok=<>;
     chomp $ok;
     return $ok;
@@ -59,7 +58,10 @@ MAIN: {
 
     my @pidLineToKill = runCommand("ps aux | grep '$firstArg ' | grep -v 'grep'");
 
-    if (scalar @pidLineToKill == 1) {
+    if (scalar @pidLineToKill == 0) {
+        print "no matches found\n";
+        exit 0;
+    } elsif (scalar @pidLineToKill == 1) {
         print scalar @pidLineToKill." match found\n";
     } else {
         print scalar @pidLineToKill." matches found\n";
@@ -68,8 +70,12 @@ MAIN: {
     foreach (@pidLineToKill) {
         chomp;
 
-        print "$i_total) ";
-        if (confirm "$_" eq "y") {
+        if (scalar @pidLineToKill > 1) {
+            print "$i_total) ";
+        }
+
+        my $answer = confirm "$_";
+        if ($answer =~ /^y/i) {
             my @pidParts = split(/\s+/, $_);
             my $pidToKill = $pidParts[1];
             runCommand("sudo kill -9 $pidToKill");
