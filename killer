@@ -28,11 +28,9 @@ sub runCommand($) {
     return @output;
 }
 
-# give user a chance to back out before an operation
 sub confirm($) {
     my ($message)=@_;
     print $message;
-    print "\nkill? (y/n) ";
     my $ok=<>;
     chomp $ok;
     return $ok;
@@ -74,7 +72,7 @@ MAIN: {
             print "$i_total) ";
         }
 
-        my $answer = confirm "$_";
+        my $answer = confirm "$_\nkill? (y/n) ";
         if ($answer =~ /^y/i) {
             my @pidParts = split(/\s+/, $_);
             my $pidToKill = $pidParts[1];
