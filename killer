@@ -47,6 +47,7 @@ MAIN: {
     if ($firstArg) {
         if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
             help();
+            exit 0;
         }
     }
 
