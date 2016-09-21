@@ -55,7 +55,9 @@ MAIN: {
     my $i_kills = 0;
     my $i_skips = 0;
 
-    my @pidLineToKill = runCommand("ps aux | grep '$firstArg ' | grep -v 'grep'");
+    my @pidLineToKill = runCommand("ps aux");
+    @pidLineToKill = grep(/$firstArg/, @pidLineToKill);
+    @pidLineToKill = grep(!/perl.*killer /, @pidLineToKill);
 
     if (scalar @pidLineToKill == 0) {
         print "no matches found\n";
