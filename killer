@@ -60,18 +60,18 @@ MAIN: {
         }
     }
 
-    my $yes_once;
-    my $yes_all;
-    my $report;
-    my $help;
+    my $a_yes_once;
+    my $a_yes_all;
+    my $a_report;
+    my $a_help;
     GetOptions(
-        'yes_once' => \$yes_once,
-        'yes_all' => \$yes_all,
-        'report' => \$report,
-        'help' => \$help
+        'yes_once' => \$a_yes_once,
+        'yes_all' => \$a_yes_all,
+        'report' => \$a_report,
+        'help' => \$a_help
     ) || (help() && exit 1);
 
-    if (defined $help) {
+    if (defined $a_help) {
         help();
         exit 0;
     }
@@ -100,13 +100,13 @@ MAIN: {
             print "$i_total) ";
         }
 
-        if (defined $report) {
+        if (defined $a_report) {
             print "$_\n";
         } else {
             my $answer = 'n';
-            if (defined $yes_all) {
+            if (defined $a_yes_all) {
                 $answer = 'y';
-            } elsif (defined $yes_once) {
+            } elsif (defined $a_yes_once) {
                 if ($i_total == 1) {
                     $answer = 'y';
                 } else {
@@ -131,7 +131,7 @@ MAIN: {
         $i_total++;
     }
 
-    if (!defined $report) {
+    if (!defined $a_report) {
         print "$i_kills processes killed\n";
         if ($i_skips > 0) {
             print "$i_skips processes skipped\n";
