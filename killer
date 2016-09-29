@@ -67,7 +67,7 @@ MAIN: {
         'yes_once' => \$yes_once,
         'yes_all' => \$yes_all,
         'report' => \$report
-    ) || help();
+    ) || (help() && exit 1);
 
     my $i_total = 1;
     my $i_kills = 0;
