@@ -2,6 +2,8 @@
 
 use strict;
 
+use Getopt::Long;
+
 sub help() {
     print STDERR <<'HELP';
 killer - Quickly kill node processes
@@ -10,10 +12,15 @@ Args:
   help - see this message
   /pattern/ - see this message
 
+Options:
+  --yes_once - auto-confirm yes for first match
+  --yes_all  - auto-confirm yes for all matches
+
 USAGE:
   >> killer help           # see help
   >> killer node           # kill all node instances
   >> killer "jonbri.*node" # kill all node instances by user
+  >> killer node --yes_all # kill all node instances, skip confirmation
 
 https://github.com/jonbri/killer
 
@@ -51,6 +58,14 @@ MAIN: {
         }
     }
 
+    my $yes_once;
+    my $yes_all;
+
+    GetOptions(
+        'yes_once' => \$yes_once,
+        'yes_all' => \$yes_all
+    ) || help();
+
     my $i_total = 1;
     my $i_kills = 0;
     my $i_skips = 0;
@@ -75,7 +90,19 @@ MAIN: {
             print "$i_total) ";
         }
 
-        my $answer = confirm "$_\nkill? (y/n) ";
+        my $answer = 'n';
+        if (defined $yes_all) {
+            $answer = 'y';
+        } elsif (defined $yes_once) {
+            if ($i_total == 1) {
+                $answer = 'y';
+            } else {
+                $answer = 'n';
+            }
+        } else {
+            $answer = confirm "$_\nkill? (y/n) ";
+        }
+
         if ($answer =~ /^y/i) {
             my @pidParts = split(/\s+/, $_);
             my $pidToKill = $pidParts[1];
