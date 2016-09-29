@@ -63,11 +63,18 @@ MAIN: {
     my $yes_once;
     my $yes_all;
     my $report;
+    my $help;
     GetOptions(
         'yes_once' => \$yes_once,
         'yes_all' => \$yes_all,
-        'report' => \$report
+        'report' => \$report,
+        'help' => \$help
     ) || (help() && exit 1);
+
+    if (defined $help) {
+        help();
+        exit 0;
+    }
 
     my $i_total = 1;
     my $i_kills = 0;
