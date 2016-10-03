@@ -10,7 +10,7 @@ killer - Quickly kill node processes
 
 Args:
   help - see this message
-  /pattern/ - see this message
+  /pattern/ - match `ps aux`
 
 Options:
   --report   - just show matches
