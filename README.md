@@ -18,3 +18,6 @@ killer help           # see help
 killer node           # kill all node instances
 killer "jonbri.*node" # (regex) kill all node instances by user
 ```
+
+## License
+[BSD-2-Clause](http://spdx.org/licenses/BSD-2-Clause)
