@@ -37,6 +37,14 @@ sub runCommand($) {
     return @output;
 }
 
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
 sub confirm($) {
     my ($message)=@_;
     print $message;
@@ -46,20 +54,6 @@ sub confirm($) {
 }
 
 MAIN: {
-    my $firstArg=shift @ARGV;
-
-    if (!$firstArg) {
-        help();
-        exit 1;
-    }
-
-    if ($firstArg) {
-        if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
-            help();
-            exit 0;
-        }
-    }
-
     my $a_yes_once;
     my $a_yes_all;
     my $a_report;
@@ -70,6 +64,19 @@ MAIN: {
         'report' => \$a_report,
         'help' => \$a_help
     ) || (help() && exit 1);
+
+    # show help if given as arg or option
+    my $firstArg=getFirstNonOptionArg();
+    if (!$firstArg) {
+        help();
+        exit 1;
+    }
+    if ($firstArg) {
+        if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
+            help();
+            exit 0;
+        }
+    }
 
     if (defined $a_help) {
         help();
