@@ -16,6 +16,7 @@ Options:
   --report   - just show matches
   --yes_once - auto-confirm yes for first match
   --yes_all  - auto-confirm yes for all matches
+  --quiet    - don't write to stdout
 
 USAGE:
   >> killer help           # see help
@@ -28,6 +29,8 @@ https://github.com/jonbri/killer
 
 HELP
 }
+
+my $a_quiet;
 
 sub runCommand($) {
     my ($command) = @_;
@@ -53,6 +56,13 @@ sub confirm($) {
     return $ok;
 }
 
+sub _print($) {
+    my ($s)=@_;
+    if (!defined $a_quiet) {
+        print $s;
+    }
+}
+
 MAIN: {
     my $a_yes_once;
     my $a_yes_all;
@@ -62,6 +72,7 @@ MAIN: {
         'yes_once' => \$a_yes_once,
         'yes_all' => \$a_yes_all,
         'report' => \$a_report,
+        'quiet' => \$a_quiet,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -92,23 +103,23 @@ MAIN: {
     @pidLineToKill = grep(!/perl.*killer /, @pidLineToKill);
 
     if (scalar @pidLineToKill == 0) {
-        print "no matches found\n";
+        _print "no matches found\n";
         exit 0;
     } elsif (scalar @pidLineToKill == 1) {
-        print scalar @pidLineToKill." match found\n";
+        _print scalar @pidLineToKill." match found\n";
     } else {
-        print scalar @pidLineToKill." matches found\n";
+        _print scalar @pidLineToKill." matches found\n";
     }
 
     foreach (@pidLineToKill) {
         chomp;
 
         if (scalar @pidLineToKill > 1) {
-            print "$i_total) ";
+            _print "$i_total) ";
         }
 
         if (defined $a_report) {
-            print "$_\n";
+            _print "$_\n";
         } else {
             my $answer = 'n';
             if (defined $a_yes_all) {
@@ -127,10 +138,10 @@ MAIN: {
                 my @pidParts = split(/\s+/, $_);
                 my $pidToKill = $pidParts[1];
                 runCommand("sudo kill -9 $pidToKill");
-                print "killed pid $pidToKill\n";
+                _print "killed pid $pidToKill\n";
                 $i_kills++;
             } else {
-                print "skipped\n";
+                _print "skipped\n";
                 $i_skips++;
             }
         }
@@ -139,9 +150,9 @@ MAIN: {
     }
 
     if (!defined $a_report) {
-        print "$i_kills processes killed\n";
+        _print "$i_kills processes killed\n";
         if ($i_skips > 0) {
-            print "$i_skips processes skipped\n";
+            _print "$i_skips processes skipped\n";
         }
     }
 }
