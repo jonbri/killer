@@ -6,7 +6,7 @@ use Getopt::Long;
 
 sub help() {
     print STDERR <<'HELP';
-killer - Quickly kill node processes
+killer - Quickly kill processes
 
 Args:
   help - see this message
