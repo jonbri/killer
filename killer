@@ -8,22 +8,23 @@ sub help() {
     print STDERR <<'HELP';
 killer - Quickly kill processes
 
-Args:
-  help - see this message
-  /pattern/ - match `ps aux`
+USAGE:
+  >> killer pattern [options]
 
-Options:
+"pattern" targets `ps aux`.
+
+OPTIONS:
   --report   - just show matches
   --yes_once - auto-confirm yes for first match
   --yes_all  - auto-confirm yes for all matches
   --quiet    - don't write to stdout
 
-USAGE:
-  >> killer help           # see help
-  >> killer node           # kill all node instances
-  >> killer "jonbri.*node" # kill all node instances by user
+EXAMPLES:
+  >> killer node           # match all node instances
+  >> killer "jonbri.*node" # match all node instances by user
   >> killer node --report  # see all matches
   >> killer node --yes_all # kill all node instances, skip confirmation
+  >> killer help           # see this message
 
 https://github.com/jonbri/killer
 
