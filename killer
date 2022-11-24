@@ -11,20 +11,19 @@ killer - Quickly kill processes
 USAGE:
   >> killer pattern [options]
 
-"pattern" targets `ps aux`.
-
 OPTIONS:
-  --report   - just show matches
-  --yes_once - auto-confirm yes for first match
-  --yes_all  - auto-confirm yes for all matches
-  --quiet    - don't write to stdout
+  --report (-r) Just show matches
+  --yes    (-y) Auto-confirm first match
+  --all    (-a) Auto-confirm all matches
+  --quiet  (-q) Don't write to stdout
 
 EXAMPLES:
-  >> killer node           # match all node instances
-  >> killer "jonbri.*node" # match all node instances by user
-  >> killer node --report  # see all matches
-  >> killer node --yes_all # kill all node instances, skip confirmation
-  >> killer help           # see this message
+  >> killer top         Match all top instances
+  >> killer "user.*top" Include user
+  >> killer top -r      See all matches
+  >> killer top -a      Kill all top instances
+                         and skip confirmation
+  >> killer help        See this message
 
 https://github.com/jonbri/killer
 
@@ -65,13 +64,13 @@ sub _print($) {
 }
 
 MAIN: {
-    my $a_yes_once;
-    my $a_yes_all;
+    my $a_yes;
+    my $a_all;
     my $a_report;
     my $a_help;
     GetOptions(
-        'yes_once' => \$a_yes_once,
-        'yes_all' => \$a_yes_all,
+        'yes' => \$a_yes,
+        'all' => \$a_all,
         'report' => \$a_report,
         'quiet' => \$a_quiet,
         'help' => \$a_help
@@ -123,9 +122,9 @@ MAIN: {
             _print "$_\n";
         } else {
             my $answer = 'n';
-            if (defined $a_yes_all) {
+            if (defined $a_all) {
                 $answer = 'y';
-            } elsif (defined $a_yes_once) {
+            } elsif (defined $a_yes) {
                 if ($i_total == 1) {
                     $answer = 'y';
                 } else {
