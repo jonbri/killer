@@ -13,6 +13,7 @@ USAGE:
 
 OPTIONS:
   --report (-r) Just show matches
+  --watch  (-w) Report and watch
   --yes    (-y) Auto-confirm first match
   --all    (-a) Auto-confirm all matches
   --quiet  (-q) Don't write to stdout
@@ -56,6 +57,11 @@ sub confirm($) {
     return $ok;
 }
 
+sub clearScreen() {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
 sub _print($) {
     my ($s)=@_;
     if (!defined $a_quiet) {
@@ -67,12 +73,14 @@ MAIN: {
     my $a_yes;
     my $a_all;
     my $a_report;
+    my $a_watch;
     my $a_help;
     GetOptions(
         'yes' => \$a_yes,
         'all' => \$a_all,
         'report' => \$a_report,
         'quiet' => \$a_quiet,
+        'watch' => \$a_watch,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -94,60 +102,86 @@ MAIN: {
         exit 0;
     }
 
+
+    if (defined $a_watch) {
+        $a_report = 1
+    }
+
+    if ($a_report) {
+        if ($a_yes || $a_all) {
+            _print "args are incompatible\n";
+            exit 1;
+        }
+    }
+
     my $i_total = 1;
     my $i_kills = 0;
     my $i_skips = 0;
 
-    my @pidLineToKill = runCommand("ps aux");
-    @pidLineToKill = grep(/$firstArg/, @pidLineToKill);
-    @pidLineToKill = grep(!/perl.*killer /, @pidLineToKill);
+    do {
+        $i_total = 1;
 
-    if (scalar @pidLineToKill == 0) {
-        _print "no matches found\n";
-        exit 0;
-    } elsif (scalar @pidLineToKill == 1) {
-        _print scalar @pidLineToKill." match found\n";
-    } else {
-        _print scalar @pidLineToKill." matches found\n";
-    }
-
-    foreach (@pidLineToKill) {
-        chomp;
-
-        if (scalar @pidLineToKill > 1) {
-            _print "$i_total) ";
+        if (defined $a_watch) {
+            clearScreen();
         }
 
-        if (defined $a_report) {
-            _print "$_\n";
+        my @pidLineToKill = runCommand("ps aux");
+        @pidLineToKill = grep(/$firstArg/, @pidLineToKill);
+        @pidLineToKill = grep(!/perl.*killer /, @pidLineToKill);
+
+        if (scalar @pidLineToKill == 0) {
+            _print "no matches found\n";
+            if (!defined $a_watch) {
+                exit 0;
+            }
+        } elsif (scalar @pidLineToKill == 1) {
+            _print scalar @pidLineToKill." match found\n";
         } else {
-            my $answer = 'n';
-            if (defined $a_all) {
-                $answer = 'y';
-            } elsif (defined $a_yes) {
-                if ($i_total == 1) {
-                    $answer = 'y';
-                } else {
-                    $answer = 'n';
-                }
-            } else {
-                $answer = confirm "$_\nkill? (y/n) ";
-            }
-
-            if ($answer =~ /^y/i) {
-                my @pidParts = split(/\s+/, $_);
-                my $pidToKill = $pidParts[1];
-                runCommand("sudo kill -9 $pidToKill");
-                _print "killed pid $pidToKill\n";
-                $i_kills++;
-            } else {
-                _print "skipped\n";
-                $i_skips++;
-            }
+            _print scalar @pidLineToKill." matches found\n";
         }
 
-        $i_total++;
-    }
+        foreach (@pidLineToKill) {
+            chomp;
+
+            if (scalar @pidLineToKill > 1) {
+                _print "$i_total) ";
+            }
+
+            if (defined $a_report) {
+                _print "$_\n";
+            } else {
+                my $answer = 'n';
+                if (defined $a_all) {
+                    $answer = 'y';
+                } elsif (defined $a_yes) {
+                    if ($i_total == 1) {
+                        $answer = 'y';
+                    } else {
+                        $answer = 'n';
+                    }
+                } else {
+                    $answer = confirm "$_\nkill? (y/n) ";
+                }
+
+                if ($answer =~ /^y/i) {
+                    my @pidParts = split(/\s+/, $_);
+                    my $pidToKill = $pidParts[1];
+                    runCommand("sudo kill -9 $pidToKill");
+                    _print "killed pid $pidToKill\n";
+                    $i_kills++;
+                } else {
+                    _print "skipped\n";
+                    $i_skips++;
+                }
+            }
+
+            $i_total++;
+        }
+
+        if (defined $a_watch) {
+            sleep(1);
+        }
+    } while(defined $a_watch);
 
     if (!defined $a_report) {
         _print "$i_kills processes killed\n";
