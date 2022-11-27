@@ -6,7 +6,7 @@ use Getopt::Long;
 
 sub help() {
     print STDERR <<'HELP';
-killer - Quickly kill processes
+killer - Manage processes
 
 USAGE:
   >> killer pattern [options]
@@ -19,12 +19,12 @@ OPTIONS:
   --quiet  (-q) Don't write to stdout
 
 EXAMPLES:
-  >> killer top         Match all top instances
-  >> killer "user.*top" Include user
-  >> killer top -r      See all matches
-  >> killer top -a      Kill all top instances
-                         and skip confirmation
-  >> killer help        See this message
+  >> killer top         - Match all top instances
+  >> killer "user.*top" - Include user
+  >> killer top -r      - See all matches
+  >> killer top -a      - Kill all top instances
+                           and skip confirmation
+  >> killer help        - See this message
 
 https://github.com/jonbri/killer
 
