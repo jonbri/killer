@@ -12,11 +12,11 @@ USAGE:
   >> killer pattern [options]
 
 OPTIONS:
-  --report (-r) Just show matches
-  --watch  (-w) Report and watch
-  --yes    (-y) Auto-confirm first match
-  --all    (-a) Auto-confirm all matches
-  --quiet  (-q) Don't write to stdout
+  --list  (-l) Just show matches
+  --watch (-w) Report and watch
+  --yes   (-y) Auto-confirm first match
+  --all   (-a) Auto-confirm all matches
+  --quiet (-q) Don't write to stdout
 
 EXAMPLES:
   >> killer top         - Match all top instances
@@ -72,13 +72,13 @@ sub _print($) {
 MAIN: {
     my $a_yes;
     my $a_all;
-    my $a_report;
+    my $a_list;
     my $a_watch;
     my $a_help;
     GetOptions(
         'yes' => \$a_yes,
         'all' => \$a_all,
-        'report' => \$a_report,
+        'list' => \$a_list,
         'quiet' => \$a_quiet,
         'watch' => \$a_watch,
         'help' => \$a_help
@@ -104,10 +104,10 @@ MAIN: {
 
 
     if (defined $a_watch) {
-        $a_report = 1
+        $a_list = 1
     }
 
-    if ($a_report) {
+    if ($a_list) {
         if ($a_yes || $a_all) {
             _print "args are incompatible\n";
             exit 1;
@@ -147,7 +147,7 @@ MAIN: {
                 _print "$i_total) ";
             }
 
-            if (defined $a_report) {
+            if (defined $a_list) {
                 _print "$_\n";
             } else {
                 my $answer = 'n';
@@ -183,7 +183,7 @@ MAIN: {
         }
     } while(defined $a_watch);
 
-    if (!defined $a_report) {
+    if (!defined $a_list) {
         _print "$i_kills processes killed\n";
         if ($i_skips > 0) {
             _print "$i_skips processes skipped\n";
